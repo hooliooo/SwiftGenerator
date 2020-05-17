@@ -1,8 +1,9 @@
 
 import ArgumentParser
-import Yams
+import CodeBuilder
 import Foundation
 import OpenAPIKit
+import Yams
 
 struct Generator: ParsableCommand {
 
@@ -45,8 +46,8 @@ struct Generator: ParsableCommand {
                 default:
                     throw ValidationError("File must be a JSON or YAML")
             }
-
-            print(generateModels(fileName: "", schemas: openAPI.components.schemas, indent: "    ").string)
+            let (schemas, modelFile): ([ObjectSchema], File) = generateModels(schemas: openAPI.components.schemas, indent: "    ")
+            generateHttpClient(paths: openAPI.paths, schemas: schemas, indent: "    ")
 
         } catch {
             let openAPIError = OpenAPI.Error(from: error)

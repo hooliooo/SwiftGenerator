@@ -8,6 +8,7 @@
 
 import CodeBuilder
 import Foundation
+import OpenAPIKit
 
 /**
  Decomposes the ObjectSchema into CodeRepresentable instances that represent documentation and a struct definition of the ObjectSchema

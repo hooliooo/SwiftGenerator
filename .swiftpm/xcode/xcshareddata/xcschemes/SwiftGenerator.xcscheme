@@ -52,6 +52,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Implementation"
+               BuildableName = "Implementation"
+               BlueprintName = "Implementation"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -76,7 +86,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-f &apos;/Users/hooliooo/Swift/Generator/swagger.yaml&apos;"
+            argument = "-f &apos;/Users/hooliooo/Swift/SwiftGenerator/swagger.yaml&apos;"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

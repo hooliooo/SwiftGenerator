@@ -88,29 +88,38 @@ public struct ObjectSchema {
         } else {
             self.documentation = "No documentation"
         }
-        self.dataFormats = context.properties.map { (propertyName: String, schema: JSONSchema) -> DataFormat in
-            ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName)
-        }
-        self.properties = context.properties.map { (propertyName: String, schema: JSONSchema) -> PropertyDescription in
-            var documentation: Documentation {
-                guard let description = schema.description else {
-                    return Documentation("No documentation", format: Documentation.Format.multiline, { Code.fragments([]) }) }
-                return Documentation(description, format: Documentation.Format.multiline, { Code.fragments([]) })
+
+        let (formats, properties): ([DataFormat], [PropertyDescription]) = context.properties
+            .reduce(
+                into: ([DataFormat](), [PropertyDescription]())
+            ) { (curr: inout (dataFormats: [DataFormat], properties: [PropertyDescription]), tuple: (String, JSONSchema)) -> Void in
+                let (propertyName, schema): (String, JSONSchema)  = tuple
+                let dataFormat: DataFormat = ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName)
+
+                let documentation: Documentation = {
+                    if let description = schema.description {
+                        return Documentation(description, format: Documentation.Format.multiline, { Code.fragments([]) })
+                    } else {
+                        return Documentation("No documentation", format: Documentation.Format.multiline, { Code.fragments([]) })
+                    }
+                }()
+
+                let description: PropertyDescription = PropertyDescription(
+                    documentation: documentation,
+                    property: StoredProperty(
+                        access: Access.public,
+                        isMutable: false,
+                        name: propertyName,
+                        type: dataFormat.stringValue,
+                        value: nil
+                    )
+                )
+                curr.dataFormats.append(dataFormat)
+                curr.properties.append(description)
             }
 
-            let type: String = ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName).stringValue
-
-            return PropertyDescription(
-                documentation: documentation,
-                property: StoredProperty(
-                    access: Access.public,
-                    isMutable: false,
-                    name: propertyName,
-                    type: type,
-                    value: nil
-                )
-            )
-        }
+        self.dataFormats = formats
+        self.properties = properties
     }
 
     // MARK: Stored Properties
@@ -143,5 +152,17 @@ public struct ObjectSchema {
      The data formats of this object
      */
     public let dataFormats: [DataFormat]
+
+}
+
+extension ObjectSchema: Hashable {
+
+    public static func == (lhs: ObjectSchema, rhs: ObjectSchema) -> Bool {
+        return lhs.name == rhs.name
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.name)
+    }
 
 }

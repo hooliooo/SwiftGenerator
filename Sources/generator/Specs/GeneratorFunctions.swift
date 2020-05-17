@@ -19,18 +19,29 @@ import OpenAPIKit
  - returns:
     A File object that represents a Swift file containing the JSONSchemas defined in the OpenAPI document as Swift models
  */
-func generateModels(fileName: String, schemas: OpenAPI.ComponentDictionary<JSONSchema>, indent: String) -> File {
-    let objects: [CodeRepresentable] = schemas
-        .lazy
+func generateModels(fileName: String = "GeneratedModels", schemas: OpenAPI.ComponentDictionary<JSONSchema>, indent: String) -> ([ObjectSchema], File) {
+    let objects: [ObjectSchema] = schemas
         .compactMap { (schemaName: OpenAPI.ComponentKey, schema: JSONSchema) -> ObjectSchema? in
             guard case let .object(format, context) = schema else { return nil }
             return ObjectSchema(name: schemaName.rawValue, format: format, context: context)
         }
-        .map {
-            modelSpec(with: $0)
-        }
 
-    return fileSpec(fileName: fileName, indent: indent) {
-        ForEach(objects) { $0 }
+    let file: File = fileSpec(fileName: fileName, indent: indent) {
+        ForEach(objects) { modelSpec(with: $0) }
     }
+
+    return (objects, file)
+}
+
+func generateHttpClient(fileName: String = "GeneratedClient", paths: OpenAPI.PathItem.Map, schemas: [ObjectSchema], indent: String) -> File {
+    paths
+        .lazy
+        .compactMap { (path: OpenAPI.Path, item: OpenAPI.PathItem) -> Void in
+            for endpoint in item.endpoints {
+                endpointSpec(with: path, item: item, schemas: schemas)
+            }
+        }
+        .forEach { $0 }
+
+    fatalError("Not implemented yet")
 }

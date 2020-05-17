@@ -2,12 +2,21 @@
   "object": {
     "pins": [
       {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "branch": null,
+          "revision": "fca036f7aeca07124067cb6e0c12b0ad6359e3d4",
+          "version": "5.1.0"
+        }
+      },
+      {
         "package": "CodeBuilder",
         "repositoryURL": "https://github.com/hooliooo/CodeBuilder.git",
         "state": {
           "branch": null,
-          "revision": "007e0a3f6b26633e2995e9d026b2c436c6e67da1",
-          "version": "0.2.4"
+          "revision": "54756078f7d5844bef94dc50b437977015702be4",
+          "version": "0.2.7"
         }
       },
       {
@@ -51,8 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "f6ac7b8118ff5d1bc0faee7f37bf6f8fd8f95602",
-          "version": "0.0.1"
+          "revision": "9f04d1ff1afbccd02279338a2c91e5f27c45e93a",
+          "version": "0.0.5"
         }
       },
       {
