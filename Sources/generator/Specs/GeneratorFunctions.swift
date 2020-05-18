@@ -34,14 +34,17 @@ func generateModels(fileName: String = "GeneratedModels", schemas: OpenAPI.Compo
 }
 
 func generateHttpClient(fileName: String = "GeneratedClient", paths: OpenAPI.PathItem.Map, schemas: [ObjectSchema], indent: String) -> File {
-    paths
-        .lazy
-        .compactMap { (path: OpenAPI.Path, item: OpenAPI.PathItem) -> Void in
-            for endpoint in item.endpoints {
-                endpointSpec(with: path, item: item, schemas: schemas)
-            }
-        }
-        .forEach { $0 }
+    let endpointSchemas = paths.compactMap { (path: OpenAPI.Path, item: OpenAPI.PathItem) -> EndpointSchema in
+        EndpointSchema(path: path, item: item, schemas: schemas)
+    }
 
-    fatalError("Not implemented yet")
+    let inputSchemas: [ObjectSchema] = endpointSchemas.flatMap { $0.inputSchemas }
+    let methods: [HttpClientMethod] = endpointSchemas.flatMap { $0.methods }
+    let file: File = fileSpec(fileName: fileName, indent: indent) {
+        ForEach(inputSchemas) { modelSpec(with: $0) }
+        lineBreak()
+        ForEach(methods) { endpointSpec(with: $0) }
+    }
+    print(file.string)
+    fatalError()
 }

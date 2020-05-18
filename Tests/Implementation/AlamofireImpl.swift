@@ -54,4 +54,10 @@ open class HttpClient {
      */
     public final let baseURL: String
 
+    func t() {
+        session.request("https://google.com").responseJSON { (response: AFDataResponse<Any>) in
+            response.result
+        }
+    }
+
 }
