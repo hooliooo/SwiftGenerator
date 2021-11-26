@@ -9,6 +9,13 @@
 import CodeBuilder
 import Foundation
 import OpenAPIKit
+import os.log
+
+fileprivate extension OSLog {
+
+    static let endpointLogger = OSLog(subsystem: "com.swift.generator", category: "endpointschema")
+
+}
 
 public struct EndpointSchema {
 
@@ -21,9 +28,10 @@ public struct EndpointSchema {
         var customRequestBodies: Set<ObjectSchema> = []
 
         self.methods = item.endpoints.map { (endpoint: OpenAPI.PathItem.Endpoint) -> HttpClientMethod in
-            let operation: OpenAPI.PathItem.Operation = endpoint.operation
-            let methodName: String = operation.operationId ?? "\(endpoint.verb.rawValue.lowercased())UnknownEntity"
+            let operation: OpenAPI.Operation = endpoint.operation
+            let methodName: String = operation.operationId ?? "\(endpoint.method.rawValue.lowercased())UnknownEntity"
             var arguments: [Argument] = []
+            var contentType: OpenAPI.ContentType = .json
 
             if let requestBody = operation.requestBody {
                 switch requestBody {
@@ -36,15 +44,17 @@ public struct EndpointSchema {
                         }
                     case .b(let request): // Build new struct
                         for (key, value) in request.content where key != .xml {
-                            switch value.schema {
+
+                            if key != .any {
+                                contentType = key
+                            }
+
+                            guard let schema = value.schema else { continue }
+
+                            switch schema {
                                 case .a(let innerJSONReference):
                                     let schema: ObjectSchema = schemas.first(where: { $0.name == innerJSONReference.name })!
-                                    arguments.append(
-                                        Argument(
-                                            name: "\(schema.name.lowercased())",
-                                            type: schema.name
-                                        )
-                                    )
+                                    arguments.append(Argument(name: "\(schema.name.lowercased())", type: schema.name))
                                 case .b(let schema):
                                     switch schema {
                                         case let .object(format, context):
@@ -53,24 +63,17 @@ public struct EndpointSchema {
                                                 format: format,
                                                 context: context
                                             )
-                                            arguments.append(
-                                                Argument(
-                                                    name: "input",
-                                                    type: schema.name
-                                                )
-                                            )
+                                            arguments.append(Argument(name: "input", type: schema.name))
                                             customRequestBodies.insert(schema)
                                         case let .array(_, context):
                                             if let items = context.items {
-                                                let dataFormat = ObjectSchema.generateDataFormat(from: items, objectName: "", propertyName: "")
+                                                let dataFormat = DataFormat.generateDataFormat(from: items, objectName: "", propertyName: "")
                                                 arguments.append(
-                                                    Argument(
-                                                        name: "\(dataFormat.stringValue.lowercased())s",
-                                                        type: "[\(dataFormat.stringValue)]"
-                                                    )
+                                                    Argument(name: "\(dataFormat.stringValue.lowercased())s", type: "[\(dataFormat.stringValue)]")
                                                 )
                                             }
                                         default:
+                                            os_log("Mapping methods failed", log: OSLog.endpointLogger, type: .error)
                                             fatalError("Not handled: \(value)")
                                 }
                             }
@@ -84,13 +87,13 @@ public struct EndpointSchema {
 
             if let response = operation.responses.first(where: { $0.key.rawValue == "200" }) {
 
-
                 switch response.value {
                     case .a(let reference):
                         print(reference.name!)
                     case .b(let innerResponse):
                         for (key, value) in innerResponse.content where key != .xml {
-                            switch value.schema {
+                            guard let schema = value.schema else { continue }
+                            switch schema {
                                 case .a(let innerJSONReference):
                                     let schema: ObjectSchema = schemas.first(where: { $0.name == innerJSONReference.name })!
                                     addCompletionHandler(with: schema.name, into: &arguments)
@@ -100,7 +103,7 @@ public struct EndpointSchema {
                                             addCompletionHandler(with: "Any", into: &arguments)
                                         case let .array(_, context):
                                             if let items = context.items {
-                                                let dataFormat = ObjectSchema.generateDataFormat(from: items, objectName: "", propertyName: "")
+                                                let dataFormat = DataFormat.generateDataFormat(from: items, objectName: "", propertyName: "")
                                                 addCompletionHandler(with: "[\(dataFormat.stringValue)]", into: &arguments)
                                             }
                                         case .string:
@@ -115,7 +118,7 @@ public struct EndpointSchema {
                 addCompletionHandler(with: "Void", into: &arguments)
             }
 
-            let method = HttpClientMethod(name: methodName, arguments: arguments.uniqued, responseValue: nil)
+            let method = HttpClientMethod(name: methodName, arguments: arguments.uniqued, contentType: contentType)
             return method
         }
         self.inputSchemas = customRequestBodies.sorted(by: { $0.name < $1.name })
@@ -133,22 +136,7 @@ public struct HttpClientMethod {
 
     public let arguments: [Argument]
 
-    public let responseValue: String?
-
-    func code() -> CodeRepresentable {
-        return functionSpec(
-            self.name,
-            access: Access.public,
-            isStatic: false,
-            throwsError: false,
-            genericSignature: nil,
-            arguments: self.arguments,
-            returnValue: nil,
-            {
-                Code.none
-            }
-        )
-    }
+    public let contentType: OpenAPI.ContentType
 
 }
 

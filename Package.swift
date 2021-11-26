@@ -9,9 +9,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.5"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0"),
-        .package(url: "https://github.com/hooliooo/CodeBuilder.git", from: "0.2.8"),
-        .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", from: "0.29.1"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.0"),
+        .package(url: "https://github.com/hooliooo/CodeBuilder.git", from: "0.2.9"),
+        .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", from: "2.4.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.1.0"))
     ],
     targets: [

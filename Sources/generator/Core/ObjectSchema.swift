@@ -15,60 +15,6 @@ import OpenAPIKit
  */
 public struct ObjectSchema {
 
-    // MARK: Static Methods
-    /**
-     Generates a DataFormat instance from the information provided by a JSON Schema
-     - parameters:
-        - schema      : The JSONSchema being parsed
-        - object      : The name of the object described by the JSONSchema
-        - propertyName: The name of the property of the object
-     - returns:
-        A DataFormat instance with information necessary to generate a proper Swift code string
-     */
-    public static func generateDataFormat(from schema: JSONSchema, objectName: String, propertyName: String) -> DataFormat {
-        switch schema {
-            case let .array(_, context):
-                if let elementType = context.items?.jsonTypeFormat {
-                    return .array(String(describing: elementType.swiftType))
-                } else if case let .reference(typeSchema) = context.items, let typeName = typeSchema.name {
-                    return .array(typeName)
-                } else {
-                    fatalError()
-                }
-
-            case .reference(let typeSchema):
-                guard let typeName = typeSchema.name else { fatalError() }
-                return .object(typeName)
-
-            case let .string(format, _):
-                if let allowedValues = format.allowedValues {
-
-                    return .enum(
-                        parentName: objectName.capitalized,
-                        enum: AnyEnum(
-                            access: Access.public,
-                            enum: RawValueEnum<String>(
-                                name: propertyName.capitalized,
-                                cases: allowedValues.map { RawValueEnumCase(name: $0.description, value: nil) }
-                            ),
-                            inheritingFrom: ["Codable"]
-                        )
-                    )
-                } else {
-                    var type: String {
-                        switch format.format {
-                            case .binary, .byte: return "Data"
-                            case .date, .dateTime: return "Date"
-                            default: return "String"
-                        }
-                    }
-                    return .object("\(type)\(schema.nullable ? "?" : "")")
-                }
-            default:
-                guard let format = schema.jsonTypeFormat else { fatalError() }
-                return .object("\(String(describing: format.swiftType))\(schema.nullable ? "?" : "")")
-        }
-    }
 
     // Initializer
     /**
@@ -78,7 +24,7 @@ public struct ObjectSchema {
         - format : The format of the object
         - context: The context of the object
      */
-    public init(name: String, format: JSONSchema.Context<JSONTypeFormat.ObjectFormat>, context: JSONSchema.ObjectContext) {
+    public init(name: String, format: JSONSchema.CoreContext<JSONTypeFormat.ObjectFormat>, context: JSONSchema.ObjectContext) {
         self.name = name
         self.format = format
         self.context = context
@@ -94,15 +40,13 @@ public struct ObjectSchema {
                 into: ([DataFormat](), [PropertyDescription]())
             ) { (curr: inout (dataFormats: [DataFormat], properties: [PropertyDescription]), tuple: (String, JSONSchema)) -> Void in
                 let (propertyName, schema): (String, JSONSchema)  = tuple
-                let dataFormat: DataFormat = ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName)
+                let dataFormat: DataFormat = DataFormat.generateDataFormat(from: schema, objectName: name, propertyName: propertyName)
 
-                let documentation: Documentation = {
-                    if let description = schema.description {
-                        return Documentation(description, format: Documentation.Format.multiline, { Code.fragments([]) })
-                    } else {
-                        return Documentation("No documentation", format: Documentation.Format.multiline, { Code.fragments([]) })
-                    }
-                }()
+                let documentation: Documentation = Documentation(
+                    schema.description ?? "No documentation",
+                    format: Documentation.Format.multiline,
+                    { Code.fragments([]) }
+                )
 
                 let description: PropertyDescription = PropertyDescription(
                     documentation: documentation,
@@ -136,7 +80,7 @@ public struct ObjectSchema {
     /**
      The ObjectFormat of this schema
      */
-    public let format: JSONSchema.Context<JSONTypeFormat.ObjectFormat>
+    public let format: JSONSchema.CoreContext<JSONTypeFormat.ObjectFormat>
 
     /**
      The ObjectContext of this schema

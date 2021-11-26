@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/hooliooo/CodeBuilder.git",
         "state": {
           "branch": null,
-          "revision": "4a173fbb82f16e55272b63b233e3d88280c0d557",
-          "version": "0.2.8"
+          "revision": "33223cd8d833de40dd6a877b664ca374925c78a6",
+          "version": "0.2.9"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/mattpolzin/OpenAPIKit.git",
         "state": {
           "branch": null,
-          "revision": "3c7e9f497229507f7ba775759c141407f0e8e1da",
-          "version": "0.29.1"
+          "revision": "4986552e76c331a99770428bd2be77ad76068c08",
+          "version": "2.4.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
           "branch": null,
-          "revision": "c947a306d2e80ecb2c0859047b35c73b8e1ca27f",
-          "version": "2.0.0"
+          "revision": "9003d51672e516cc59297b7e96bff1dfdedcb4ea",
+          "version": "4.0.4"
         }
       }
     ]

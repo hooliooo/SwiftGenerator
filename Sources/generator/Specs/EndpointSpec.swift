@@ -20,7 +20,7 @@ func endpointSpec(with method: HttpClientMethod) -> CodeRepresentable {
         arguments: method.arguments,
         returnValue: nil,
         {
-            Code.none
+            SingleLineFragment("\(method.contentType.rawValue)")
         }
     )
 }

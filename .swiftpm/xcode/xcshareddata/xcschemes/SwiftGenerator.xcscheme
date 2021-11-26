@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1130"
+   LastUpgradeVersion = "1240"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -31,6 +31,20 @@
                BlueprintIdentifier = "GeneratorTests"
                BuildableName = "GeneratorTests"
                BlueprintName = "GeneratorTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Implementation"
+               BuildableName = "Implementation"
+               BlueprintName = "Implementation"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -86,7 +100,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-f &apos;/Users/hooliooo/Swift/SwiftGenerator/swagger.yaml&apos;"
+            argument = "--file-path /Users/hooliooo/Swift/SwiftGenerator/swagger.json"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

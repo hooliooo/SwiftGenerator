@@ -27,12 +27,15 @@ struct Generator: ParsableCommand {
 
     func run() throws {
         let filePathComponents: [Substring] = self.filePath.split(separator: "/")
-        var path: String = "file://"
-        if filePathComponents.count > 1 {
-            path += self.filePath
-        } else {
-            path += FileManager.default.currentDirectoryPath + "/" + self.filePath
-        }
+        let path: String = {
+            var path: String = "file://"
+            if filePathComponents.count > 1 {
+                path += self.filePath
+            } else {
+                path += FileManager.default.currentDirectoryPath + "/" + self.filePath
+            }
+            return path
+        }()
 
         let url = URL(string: path)!
 
@@ -47,6 +50,7 @@ struct Generator: ParsableCommand {
                     throw ValidationError("File must be a JSON or YAML")
             }
             let (schemas, modelFile): ([ObjectSchema], File) = generateModels(schemas: openAPI.components.schemas, indent: "    ")
+            print(modelFile.string)
             generateHttpClient(paths: openAPI.paths, schemas: schemas, indent: "    ")
 
         } catch {
