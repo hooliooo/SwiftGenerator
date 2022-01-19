@@ -47,7 +47,7 @@ public struct ObjectSchema {
                         parentName: objectName.capitalized,
                         enum: AnyEnum(
                             access: Access.public,
-                            enum: RawValueEnum<String>(
+                            spec: RawValueEnum<String>(
                                 name: propertyName.capitalized,
                                 cases: allowedValues.map { RawValueEnumCase(name: $0.description, value: nil) }
                             ),
@@ -78,7 +78,7 @@ public struct ObjectSchema {
         - format : The format of the object
         - context: The context of the object
      */
-    public init(name: String, format: JSONSchema.Context<JSONTypeFormat.ObjectFormat>, context: JSONSchema.ObjectContext) {
+    public init(name: String, format: JSONSchema.CoreContext<JSONTypeFormat.ObjectFormat>, context: JSONSchema.ObjectContext) {
         self.name = name
         self.format = format
         self.context = context
@@ -99,7 +99,13 @@ public struct ObjectSchema {
             }
 
             let type: String = ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName).stringValue
-
+            let defaultValue: String? = {
+                if let value = schema.defaultValue?.value {
+                    return "\(value)"
+                } else {
+                    return nil
+                }
+            }()
             return PropertyDescription(
                 documentation: documentation,
                 property: StoredProperty(
@@ -107,7 +113,7 @@ public struct ObjectSchema {
                     isMutable: false,
                     name: propertyName,
                     type: type,
-                    value: nil
+                    value: defaultValue
                 )
             )
         }
@@ -127,7 +133,7 @@ public struct ObjectSchema {
     /**
      The ObjectFormat of this schema
      */
-    public let format: JSONSchema.Context<JSONTypeFormat.ObjectFormat>
+    public let format: JSONSchema.CoreContext<JSONTypeFormat.ObjectFormat>
 
     /**
      The ObjectContext of this schema

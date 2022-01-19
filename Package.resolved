@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/hooliooo/CodeBuilder.git",
         "state": {
           "branch": null,
-          "revision": "007e0a3f6b26633e2995e9d026b2c436c6e67da1",
-          "version": "0.2.4"
+          "revision": "18b3d36f8fa3cdf7077832d8ded4809fbf170a27",
+          "version": "0.2.11"
         }
       },
       {
@@ -20,48 +20,30 @@
         }
       },
       {
-        "package": "FineJSON",
-        "repositoryURL": "https://github.com/omochi/FineJSON.git",
-        "state": {
-          "branch": null,
-          "revision": "05101709243cb66d80c92e645210a3b80cf4e17f",
-          "version": "1.14.0"
-        }
-      },
-      {
         "package": "OpenAPIKit",
         "repositoryURL": "https://github.com/mattpolzin/OpenAPIKit.git",
         "state": {
-          "branch": null,
-          "revision": "3c7e9f497229507f7ba775759c141407f0e8e1da",
-          "version": "0.29.1"
-        }
-      },
-      {
-        "package": "RichJSONParser",
-        "repositoryURL": "https://github.com/omochi/RichJSONParser.git",
-        "state": {
-          "branch": null,
-          "revision": "263e2ecfe88d0500fa99e4cbc8c948529d335534",
-          "version": "3.0.0"
+          "branch": "main",
+          "revision": "6316f4f685c60a4586fa4cd606d858b044739d15",
+          "version": null
         }
       },
       {
         "package": "swift-argument-parser",
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
-          "branch": null,
-          "revision": "f6ac7b8118ff5d1bc0faee7f37bf6f8fd8f95602",
-          "version": "0.0.1"
+          "branch": "main",
+          "revision": "cc481f7d1cc911e96a9a403a9c2abeb69d337c2c",
+          "version": null
         }
       },
       {
         "package": "Yams",
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
-          "branch": null,
-          "revision": "c947a306d2e80ecb2c0859047b35c73b8e1ca27f",
-          "version": "2.0.0"
+          "branch": "main",
+          "revision": "e01df7ded908a4632cda8819ce7f3d2c87e06a18",
+          "version": null
         }
       }
     ]

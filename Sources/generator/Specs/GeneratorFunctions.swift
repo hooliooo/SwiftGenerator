@@ -20,17 +20,14 @@ import OpenAPIKit
     A File object that represents a Swift file containing the JSONSchemas defined in the OpenAPI document as Swift models
  */
 func generateModels(fileName: String, schemas: OpenAPI.ComponentDictionary<JSONSchema>, indent: String) -> File {
-    let objects: [CodeRepresentable] = schemas
-        .lazy
-        .compactMap { (schemaName: OpenAPI.ComponentKey, schema: JSONSchema) -> ObjectSchema? in
+    let models: [CodeRepresentable] = schemas
+        .compactMap { (schemaName: OpenAPI.ComponentKey, schema: JSONSchema) -> CodeRepresentable? in
             guard case let .object(format, context) = schema else { return nil }
-            return ObjectSchema(name: schemaName.rawValue, format: format, context: context)
-        }
-        .map {
-            modelSpec(with: $0)
+            let objectSchema = ObjectSchema(name: schemaName.rawValue, format: format, context: context)
+            return modelSpec(with: objectSchema)
         }
 
     return fileSpec(fileName: fileName, indent: indent) {
-        ForEach(objects) { $0 }
+        ForEach(models) { $0 }
     }
 }

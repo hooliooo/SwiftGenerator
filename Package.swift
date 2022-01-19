@@ -1,14 +1,14 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
     name: "SwiftGenerator",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "0.0.1"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser", branch: "main"),
+        .package(url: "https://github.com/jpsim/Yams.git", branch: "main"),
         .package(url: "https://github.com/hooliooo/CodeBuilder.git", from: "0.2.4"),
-        .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", from: "0.29.1")
+        .package(url: "https://github.com/mattpolzin/OpenAPIKit.git", branch: "main")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
