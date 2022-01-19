@@ -17,7 +17,7 @@ import Foundation
     - A GroupFragment that represents an object described in the ObjectSchema
  */
 func modelSpec(with schema: ObjectSchema) -> CodeRepresentable {
-    let properties: [CodeRepresentable] = schema.properties.map { (property: PropertyDescription) -> GroupFragment in
+    let properties: [CodeRepresentable] = schema.properties.map { (property: PropertySchema) -> GroupFragment in
         return GroupFragment(children: [property.documentation, property.property])
     }
     let enums: [CodeRepresentable] = schema.dataFormats

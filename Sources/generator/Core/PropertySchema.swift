@@ -12,7 +12,7 @@ import Foundation
 /**
  Holds information about a property of an ObjectSchema
  */
-public struct PropertyDescription {
+public struct PropertySchema {
 
     /**
      Initializer

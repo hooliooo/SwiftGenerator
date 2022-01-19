@@ -91,7 +91,7 @@ public struct ObjectSchema {
         self.dataFormats = context.properties.map { (propertyName: String, schema: JSONSchema) -> DataFormat in
             ObjectSchema.generateDataFormat(from: schema, objectName: name, propertyName: propertyName)
         }
-        self.properties = context.properties.map { (propertyName: String, schema: JSONSchema) -> PropertyDescription in
+        self.properties = context.properties.map { (propertyName: String, schema: JSONSchema) -> PropertySchema in
             var documentation: Documentation {
                 guard let description = schema.description else {
                     return Documentation("No documentation", format: Documentation.Format.multiline, { Code.fragments([]) }) }
@@ -106,7 +106,7 @@ public struct ObjectSchema {
                     return nil
                 }
             }()
-            return PropertyDescription(
+            return PropertySchema(
                 documentation: documentation,
                 property: StoredProperty(
                     access: Access.public,
@@ -143,7 +143,7 @@ public struct ObjectSchema {
     /**
      The properties of this object
      */
-    public let properties: [PropertyDescription]
+    public let properties: [PropertySchema]
 
     /**
      The data formats of this object

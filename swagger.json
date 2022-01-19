@@ -3068,7 +3068,8 @@
                   "description":"The url of the latest image",
                   "nullable":true,
                   "readOnly":false,
-                  "example":""
+                  "example":"",
+                  "maxLength":255
                },
                "imageCount":{
                   "title":"imageCount",
